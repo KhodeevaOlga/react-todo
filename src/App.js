@@ -4,7 +4,7 @@ import Button from "./components/Button/button";
 import TodoList from "./components/TodoList/list";
 import Checkbox from "./components/Checkbox";
 import './index.css';
-
+import './App.css'
 function App() {
 
 const inputCb = (event) => setValue(event.target.value);
@@ -15,6 +15,8 @@ const inputCb = (event) => setValue(event.target.value);
     const [value, setValue] = useState("");
     const [activeTab, setActiveTab] = useState("All");
     const [checkAll, setCheckAll] = useState(false)
+    const [show, setShow] = useState(false)
+    const [editedElement, setEditedElement] = useState('')
 
   const addValue = () => {
     if (value.length) {
@@ -40,6 +42,7 @@ const inputCb = (event) => setValue(event.target.value);
         counters.current.done = all - active;
     };
 
+
     // Изменение одного статуса
 
     const changeTodoStatus = (elem, check) => {
@@ -51,6 +54,7 @@ const inputCb = (event) => setValue(event.target.value);
         count(changeOne);
 
     };
+
 
     // Change all status
 
@@ -101,26 +105,58 @@ const inputCb = (event) => setValue(event.target.value);
     }
 
 
+    // Edit
+    const openEdit = (el) => {
+        setEditedElement(el)
+        setShow(true)
+    }
+    const closeEdit = (id, value) => {
+        setTodos(todos.map((item) => (item.id === id ? { ...item, title: value } : item)))
+        setShow(false)
+    }
+
+
   return (
-      <div onKeyDown={handleKeyDown}>
-        <h1>todos</h1>
-          <Checkbox
-              checked={checkAll}
-              onChange={changeAllTodoStatus}
-          />
-        <Input
-            value={value}
-            handler={inputCb}
+      <div onKeyDown={handleKeyDown} className="todoapp">
+
+          <header>
+              <h1>todos</h1>
+              <Checkbox
+                  id="toggle-all"
+                  className="toggle-all"
+                  checked={checkAll}
+                  onChange={changeAllTodoStatus}
+              />
+              <label htmlFor="toggle-all"></label>
+
+              <Input
+                  value={value}
+                  handler={inputCb}
+                  className="new-todo"
+              />
+              <Button onClick={addValue} nameButton='Add' className="btnAdd"/>
+          </header>
+
+        <TodoList
+            todo={getList()}
+            changeTodoStatus={changeTodoStatus}
+            deleteTodo={deleteTodo}
+            closeEdit={closeEdit}
+            show={show}
+            openEdit={openEdit}
+
+            editedElement={editedElement}
         />
-        <Button onClick={addValue} nameButton='Add'/>
-        <TodoList  todo={getList()} changeTodoStatus={changeTodoStatus} deleteTodo={deleteTodo}/>
-        <ul>
+
+          <footer className='footer'>
+        <ul className="filters">
             <Button onClick={() => Tabs('All')} nameButton={`All (${counters.current.all})`}/>
             <Button onClick={() => Tabs('Active')} nameButton={`Active (${counters.current.active})`}/>
             <Button onClick={() => Tabs('Complete')} nameButton={`Complete (${counters.current.done})`}/>
         </ul>
 
-      <Button onClick={deleteAllTodo} nameButton='Clear completed'/>
+      <Button className="btnClear" onClick={deleteAllTodo} nameButton='Clear completed'/>
+          </footer>
       </div>
   )
 

@@ -1,10 +1,10 @@
 import React from "react";
-import Button from "../Button/button";
-import Checkbox from "../Checkbox";
+import TodoItem from '../TodoItem'
+import './index.css'
 
 function TodoList(props) {
 
-    const {todo, changeTodoStatus, deleteTodo} = props
+    const {todo, changeTodoStatus, deleteTodo, closeEdit, show, openEdit, editedElement} = props
 
     // const _changeTodoStatus = (check) => {
     //     changeTodoStatus(el, check)
@@ -13,17 +13,23 @@ function TodoList(props) {
 
 return (
     <div>
-        <ul>
+        <section className="main">
+        <ul className="todo-list">
             {todo.map((el) => (
-                <li key={el.id}>
-                    <Checkbox checked={el.status} onChange={check => changeTodoStatus(el, check)}/>
-                {el.title}
-                <Button
-                    onClick={() => deleteTodo(el.id)}
-                    nameButton='X'/>
-                </li>
+               <TodoItem
+                   el={el}
+                   key={el.id}
+                   changeTodoStatus={changeTodoStatus}
+                   deleteTodo={deleteTodo}
+                   closeEdit={closeEdit}
+                   show={show}
+                   openEdit={openEdit}
+                   editedElement={editedElement}
+
+               />
             ))}
         </ul>
+            </section>
     </div>
 )}
 
